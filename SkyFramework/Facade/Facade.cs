@@ -44,6 +44,7 @@ namespace SkyFramework.Facade
 
         public Object InvoqueService(string method, object[] arguments)
         {
+
             try
             {
                 Dispatcher disp = Dispatcher.GetInstance(intUserId);
