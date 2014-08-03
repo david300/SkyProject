@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- Este es el archivo de configuracion del controller, que le indica la clase servicio a invocar, 
+el servicio , los log que debe realizar y si requiere seguridad-->
+<facade-Config>
+  <Actions assembly="Services" namespace="Services" >
+    
+    <Action name="Usuario.Security.GetById" logger="false" requireSecurity="true">
+      <Service class="UsuarioServices" method="GetById"></Service>
+    </Action>
+    
+  </Actions>
+</facade-Config>
