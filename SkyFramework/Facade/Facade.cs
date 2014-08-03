@@ -48,7 +48,6 @@ namespace SkyFramework.Facade
             {
                 Dispatcher disp = Dispatcher.GetInstance(intUserId);
                 return disp.SendService(method, arguments);
-
             }
             catch (Exceptions.ServiceNotFound ex)
             {
