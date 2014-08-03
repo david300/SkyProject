@@ -21,6 +21,7 @@ namespace SkyFramework.Exceptions
         public BusinessLogicException(string message, Exception innerException)
             : base(message, innerException)
         {
+
         }
 
     }
