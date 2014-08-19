@@ -72,6 +72,9 @@ namespace SkyFramework.Facade
                         oCommand.RequireSecurity = actioNode.Attributes["requireSecurity"].Value.ToLower().Equals("true");
                         oCommand.makeLog = actioNode.Attributes["logger"].Value.ToLower().Equals("true");
 
+                        oCommand.CloseTransaction = actioNode.Attributes["closeTransaction"].Value.ToLower().Equals("true");
+                        oCommand.OpenedConnection = actioNode.Attributes["openedConnection"].Value.ToLower().Equals("true");
+
                         foreach (XmlNode subNode in actioNode.ChildNodes)
                         {
                             if (subNode.NodeType != XmlNodeType.Element)
@@ -123,12 +126,13 @@ namespace SkyFramework.Facade
         ///<para>PRE: cmd no null           </para>POS:ejecuta el servicio pedido
         ///<para>HELP:                      </para>Exeptions: ServiceNotFound, Y excepciones por problemas de la carga de Assembly
         ///</summary> 	 
-        private object InvoqueProcesses(Command cmd, object[] argumentos)
+        private SkyFramework.Entities.Mensaje InvoqueProcesses(Command cmd, object[] argumentos)
         {
             try
             {
-                Assembly assembly = getAssembly(cmd);
-                Type myType = assembly.GetType(cmd.Namespace + "." + cmd.ServiceClass);
+                //Assembly assembly = getAssembly(cmd);
+                //Type myType = assembly.GetType(cmd.Namespace + "." + cmd.ServiceClass);
+                Type myType = Type.GetType(cmd.Namespace + "." + cmd.ServiceClass);
                 if (myType == null)
                 {
                     throw new SkyFramework.Exceptions.ServiceNotFound(
@@ -145,8 +149,15 @@ namespace SkyFramework.Facade
                         " Llamada desde el servicio : " + cmd.ActionName
                         );
                 }
-                Object obj = Activator.CreateInstance(myType);
-                return mymethod.Invoke(obj, argumentos);
+
+                if (cmd.OpenedConnection)
+                {
+                    Array.Resize(ref argumentos, argumentos.Length + 1);
+                    argumentos[argumentos.Length - 1] = new SkyFramework.Connection.SkyConnection("SSSO");
+                }
+
+                //Object obj = Activator.CreateInstance(myType);
+                return (SkyFramework.Entities.Mensaje)mymethod.Invoke(null, argumentos);
 
 
             }
@@ -213,7 +224,8 @@ namespace SkyFramework.Facade
         {
             //Cargo el path y Archivo de configuracion
             // configFile  = System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Replace(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + ".DLL", "") + configFileName;
-            binPath = System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Replace(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + ".DLL", "");
+            binPath = System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Replace(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + ".DLL", "").Replace("bin/","Config/");
+            
             XmlTextReader reader = null;
 
             try
@@ -239,12 +251,11 @@ namespace SkyFramework.Facade
         private bool verifyPermissions(String permiso)
         {
             object[] p = { UserId, permiso };
-            return (bool)SendService("verifyPermissions", p);
+            return (bool)(SendService("verifyPermissions", p).Obj);
         }
 
 
         #endregion
-
 
         //----------------------------------------------------------------------------------------------
 
@@ -271,9 +282,9 @@ namespace SkyFramework.Facade
         /// <param name="metodo">String nombre del metodo</param>
         /// <param name="argumentos">Parametros que necesite el servicio</param>
         /// <returns>Object , Cualquier cosa que devuelva el servicio</returns>
-        public object SendService(string metodo, object[] argumentos)
+        public SkyFramework.Entities.Mensaje SendService(string metodo, object[] argumentos)
         {
-            object result = null;
+            SkyFramework.Entities.Mensaje result = null;
 
             SkyFramework.LogManager.LogHelper logger = new SkyFramework.LogManager.LogHelper(SystemId);
             // logger.SetLog(0, "Enviando servicio para el metodo : " + metodo, SkyFramework.LogManager.LogHelper.eErrorLevel.Debug, null);

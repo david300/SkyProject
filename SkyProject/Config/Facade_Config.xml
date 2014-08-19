@@ -2,9 +2,9 @@
 <!-- Este es el archivo de configuracion del controller, que le indica la clase servicio a invocar, 
 el servicio , los log que debe realizar y si requiere seguridad-->
 <facade-Config>
-  <Actions assembly="Services" namespace="Services" >
+  <Actions assembly="Services" namespace="SkyFramework.Services" >
     
-    <Action name="Usuario.Security.GetById" logger="false" requireSecurity="true">
+    <Action name="Usuario.Security.GetById" logger="false" requireSecurity="true" openedConnection="true" closeTransaction="false">
       <Service class="UsuarioServices" method="GetById"></Service>
     </Action>
     

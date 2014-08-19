@@ -42,13 +42,13 @@ namespace SkyFramework.Facade
 
         }
 
-        public Object InvoqueService(string method, object[] arguments)
+        public SkyFramework.Entities.Mensaje InvoqueService(string method, object[] arguments)
         {
 
             try
             {
                 Dispatcher disp = Dispatcher.GetInstance(intUserId);
-                return disp.SendService(method, arguments);
+                return (SkyFramework.Entities.Mensaje)disp.SendService(method, arguments);
             }
             catch (Exceptions.ServiceNotFound ex)
             {

@@ -25,7 +25,13 @@ namespace SkyFramework.Services
         #region Public Static Mothods
             public static Mensaje GetById(decimal Id, SkyFramework.Connection.SkyConnection conn) 
             {
-                return new Mensaje();
+                conn.ExecuteDataSet("EE");
+                return new Mensaje(Mensaje.eTipo.OK, "Le paso una conexión!");
+            }
+
+            public static Mensaje GetById0(decimal Id)
+            {
+                return new Mensaje(Mensaje.eTipo.OK, "No le paso una mierda!");
             }
         #endregion
     }

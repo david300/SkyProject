@@ -11,9 +11,10 @@ namespace SkyProject
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Page.IsPostBack) 
+            if (!Page.IsPostBack) 
             {
- 
+                SkyFramework.Facade.Facade f = new SkyFramework.Facade.Facade();
+                Response.Write(f.InvoqueService("Usuario.Security.GetById", new object[]{ (decimal)1 }).Descripcion);
             }
         }
     }

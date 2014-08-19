@@ -19,6 +19,20 @@ namespace SkyFramework.Facade
         private string succefullLog;
         private string notPermisionLog;
 
+        private bool openedConnection;
+        public bool OpenedConnection
+        {
+            get { return openedConnection; }
+            set { openedConnection = value; }
+        }
+
+        private bool closeTransaction;
+        public bool CloseTransaction
+        {
+            get { return closeTransaction; }
+            set { closeTransaction = value; }
+        }
+
         private bool _makeLog;
 
         public bool makeLog
