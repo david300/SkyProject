@@ -7,14 +7,14 @@ using System.Web.UI.WebControls;
 
 namespace SkyProject
 {
-    public partial class WebForm1 : System.Web.UI.Page
+    public partial class WebForm1 : Config.Base.SkyBase
     {
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!Page.IsPostBack) 
             {
-                SkyFramework.Facade.Facade f = new SkyFramework.Facade.Facade();
-                Response.Write(f.InvoqueService("Usuario.Security.GetById", new object[]{ (decimal)1 }).Descripcion);
+                SkyFramework.Entities.Mensaje mensaje = f.InvoqueService("Usuario.Security.GetById", new object[] { (decimal)1 });
+                Response.Write(mensaje.Descripcion);
             }
         }
     }

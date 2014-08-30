@@ -40,6 +40,15 @@ namespace SkyFramework.Connection
         #endregion
 
         #region Public Methods
+
+        internal static DbTransaction GetTransaction()
+        {
+            string strConnectionString = ""; // VerifyConection(null);
+            SqlConnection connection = new SqlConnection(strConnectionString);
+            connection.Open();
+            return connection.BeginTransaction();
+        }
+
         public SkyConnection.State GetStatus() 
         {
             if (_connection == null) {
@@ -62,6 +71,18 @@ namespace SkyFramework.Connection
         {
             return null;
         }
+
+        internal void ExecuteNonQuery() 
+        {
+
+        }
+
+        internal object ExecuteEscalar()
+        {
+            return null;
+        }
+
+
         #endregion
     }
 }
