@@ -13,6 +13,7 @@ namespace SkyProject
         {
             if (!Page.IsPostBack) 
             {
+                //Peque puto
                 SkyFramework.Entities.Mensaje mensaje = f.InvoqueService("Usuario.Security.GetById", new object[] { (decimal)1 });
                 Response.Write(mensaje.Descripcion);
             }

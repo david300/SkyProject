@@ -31,6 +31,7 @@ namespace SkyFramework.Services
 
             public static Mensaje GetById0(decimal Id)
             {
+                //Nestor puto
                 return new Mensaje(Mensaje.eTipo.OK, "No le paso una mierda!");
             }
         #endregion
