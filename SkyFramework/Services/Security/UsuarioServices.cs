@@ -23,10 +23,29 @@ namespace SkyFramework.Services
         #endregion
 
         #region Public Static Mothods
+            public static Mensaje VerificarPermiso(decimal IdUsuario, string ActionName, SkyFramework.Connection.SkyConnection conn)
+            {
+                try
+                {
+                    return new Mensaje(Mensaje.eTipo.OK, true);
+                }
+                catch (Exception ex)
+                {   
+                    throw ex;
+                }
+            }
             public static Mensaje GetById(decimal Id, SkyFramework.Connection.SkyConnection conn) 
             {
-                conn.ExecuteDataSet("EE");
-                return new Mensaje(Mensaje.eTipo.OK, "Le paso una conexión!");
+                try
+                {
+                    DataSet ds = conn.ExecuteDataSet("select * ferom DatosUsuarios where id = " + Id.ToString());
+                    return new Mensaje(Mensaje.eTipo.OK, "ds count: " + ds.Tables[0].Rows.Count.ToString());
+                }
+                catch (Exception ex)
+                {
+                    return new Mensaje(Mensaje.eTipo.ERR_INESPERADO, ex);
+                }
+                
             }
 
             public static Mensaje GetById0(decimal Id)

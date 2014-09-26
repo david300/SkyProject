@@ -53,9 +53,10 @@
     <Compile Include="Facade\Command.cs" />
     <Compile Include="Facade\Dispatcher.cs" />
     <Compile Include="Facade\Facade.cs" />
+    <Compile Include="Facade\SessionBean.cs" />
     <Compile Include="LogManager\LogHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\UsuarioServices.cs" />
+    <Compile Include="Services\Security\UsuarioServices.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

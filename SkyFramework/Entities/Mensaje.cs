@@ -73,6 +73,14 @@ namespace SkyFramework.Entities
             _exException = null;
         }
 
+        public Mensaje(eTipo peTipo, object poObj)
+        {
+            _eID = peTipo;
+            _sDescripcion = peTipo.ToString();
+            _oObj = poObj;
+            _exException = null;
+        }
+
         public Mensaje(eTipo peTipo, string psDescripcion, object poObj)
         {
             _eID = peTipo;

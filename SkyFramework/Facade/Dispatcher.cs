@@ -20,7 +20,9 @@ namespace SkyFramework.Facade
         private string binPath = "";
         private Hashtable CommandList;
         private int SystemId = 0;
-        private int UserId = 0;
+        private decimal UserId = 0;
+        private string connString = "";
+        private SkyFramework.Connection.SkyConnection _skyConn = null;
 
         private static Dispatcher uniqueInstance;
 
@@ -130,6 +132,8 @@ namespace SkyFramework.Facade
         {
             try
             {
+                List<object> _argumentos = argumentos.ToList();
+
                 //Assembly assembly = getAssembly(cmd);
                 //Type myType = assembly.GetType(cmd.Namespace + "." + cmd.ServiceClass);
                 Type myType = Type.GetType(cmd.Namespace + "." + cmd.ServiceClass);
@@ -150,20 +154,24 @@ namespace SkyFramework.Facade
                         );
                 }
 
+                //OpenedConnection indica si le tengo que pasar una conexión abierta
                 if (cmd.OpenedConnection)
                 {
-                    Array.Resize(ref argumentos, argumentos.Length + 1);
-                    argumentos[argumentos.Length - 1] = new SkyFramework.Connection.SkyConnection("SSSO");
+                    _argumentos.Add(this._skyConn = new SkyFramework.Connection.SkyConnection("Data Source=localhost;Initial Catalog=binDGSLD;Integrated Security=True", true));
                 }
 
-                //Object obj = Activator.CreateInstance(myType);
-                return (SkyFramework.Entities.Mensaje)mymethod.Invoke(null, argumentos);
-
-
+                return (SkyFramework.Entities.Mensaje)mymethod.Invoke(null, _argumentos.ToArray());
             }
             catch (Exception ex)
             {
                 throw ex;
+            }
+            finally
+            {
+                if (this._skyConn != null)
+                {
+                    this._skyConn.CloseConnection();
+                }
             }
 
         }
@@ -263,7 +271,7 @@ namespace SkyFramework.Facade
         /// manejo con singleton, para leer configuracion unicamente una vez
         /// </summary>
         /// <returns>Instancia Dispacher</returns>
-        public static Dispatcher GetInstance(int userId)
+        public static Dispatcher GetInstance(decimal userId)
         {
 
             if (uniqueInstance == null)

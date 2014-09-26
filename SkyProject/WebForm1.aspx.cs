@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using SkyFramework.Entities;
 
 namespace SkyProject
 {
@@ -13,8 +14,7 @@ namespace SkyProject
         {
             if (!Page.IsPostBack) 
             {
-                //Peque puto
-                SkyFramework.Entities.Mensaje mensaje = f.InvoqueService("Usuario.Security.GetById", new object[] { (decimal)1 });
+                Mensaje mensaje = Facade.InvoqueService("Usuario.Security.GetById", new object[] { (decimal)1000 });
                 Response.Write(mensaje.Descripcion);
             }
         }

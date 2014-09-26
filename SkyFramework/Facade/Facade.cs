@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using SkyFramework.Facade;
-using System.Web;
+using System.Configuration;
 using System.Web.UI;
 
 namespace SkyFramework.Facade
 {
     public class Facade
     {
-        private int intUserId;
+        private decimal intUserId;
 
         public Facade()
         {
@@ -28,17 +28,16 @@ namespace SkyFramework.Facade
         public Facade(HttpContext context)
         {
             //Controlaría el acceso a toda la mierda
-            //SessionBean s = (SessionBean)context.Session["sessionBean"];
-            //if ((s == null) || (s.Usuario == null) || ((s.Usuario.Id_Usuario == null))
-            //{
-            //    context.Session.Abandon();
-            //    FormsAuthentication.SignOut();
-            //    FormsAuthentication.RedirectToLoginPage();
-            //}
-            //else
-            //{
-            //    intUserId = s.Usuario.Usuario.UsuID;
-            //}
+            SessionBean s = (SessionBean)context.Session["sessionBean"];
+            if ((s == null) || (s.Usuario == null))
+            {
+                context.Session.Abandon();
+                context.Response.Redirect("Login.aspx");
+            }
+            else
+            {
+                intUserId = s.Usuario.Id_Usuario;
+            }
 
         }
 

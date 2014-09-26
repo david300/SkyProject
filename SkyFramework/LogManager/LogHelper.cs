@@ -26,7 +26,7 @@ namespace SkyFramework.LogManager
 
         }
 
-        public void SetLog(int UserId, string Menssage, eErrorLevel Level, int? OpcionalCodError)
+        public void SetLog(decimal UserId, string Menssage, eErrorLevel Level, int? OpcionalCodError)
         { 
 
         }
