@@ -48,6 +48,7 @@
     <Compile Include="Exceptions\FacadeException.cs" />
     <Compile Include="Exceptions\SecurityExceptions.cs" />
     <Compile Include="Exceptions\ServiceNotFound.cs" />
+    <Compile Include="Exceptions\TargetParameterCountException.cs" />
     <Compile Include="Exceptions\XmlConfiguration.cs" />
     <Compile Include="Exceptions\XmlNotInCorrectFormat.cs" />
     <Compile Include="Facade\Command.cs" />

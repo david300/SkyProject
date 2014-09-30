@@ -48,6 +48,10 @@ namespace SkyFramework.Facade
                 Dispatcher disp = Dispatcher.GetInstance(intUserId);
                 return (SkyFramework.Entities.Mensaje)disp.SendService(method, arguments);
             }
+            catch (Exceptions.TargetParameterCountException tpcEx)
+            {
+                throw tpcEx;
+            }
             catch (Exceptions.ServiceNotFound ex)
             {
                 throw ex;

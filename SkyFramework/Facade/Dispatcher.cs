@@ -160,7 +160,18 @@ namespace SkyFramework.Facade
                     _argumentos.Add(this._skyConn = new SkyFramework.Connection.SkyConnection("Data Source=localhost;Initial Catalog=binDGSLD;Integrated Security=True", true));
                 }
 
+
+                List<ParameterInfo> parameters = mymethod.GetParameters().ToList<ParameterInfo>();
+                if (_argumentos.Count != parameters.Count)
+                {
+                    throw new Exceptions.TargetParameterCountException("El conteo de parámetros de la llamada, no coincide con el del método: " + Exceptions.TargetParameterCountException.GetParameters(parameters), parameters);
+                }
+
                 return (SkyFramework.Entities.Mensaje)mymethod.Invoke(null, _argumentos.ToArray());
+            }
+            catch (Exceptions.TargetParameterCountException tpcEx) 
+            {
+                throw tpcEx;
             }
             catch (Exception ex)
             {
