@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Connection\SkyConfiguration.cs" />
     <Compile Include="Connection\SkyConnection.cs" />
     <Compile Include="Entities\Mensaje.cs" />
     <Compile Include="Entities\Usuario.cs" />

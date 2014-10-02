@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace SkyFramework.Exceptions
 {
-    public class XmlNotInCorrectFormat : FacadeException
+    public class XmlNotInCorrectFormatException : FacadeException
     {
-        public XmlNotInCorrectFormat()
+        public XmlNotInCorrectFormatException()
         {
 
         }
 
-        public XmlNotInCorrectFormat(string message)
+        public XmlNotInCorrectFormatException(string message)
             : base(message)
         {
         }
 
 
-        public XmlNotInCorrectFormat(string message, Exception innerExeption)
+        public XmlNotInCorrectFormatException(string message, Exception innerExeption)
             : base(message, innerExeption)
         {
         }

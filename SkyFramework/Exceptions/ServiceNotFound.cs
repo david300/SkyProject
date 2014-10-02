@@ -6,21 +6,21 @@ using System.Threading.Tasks;
 
 namespace SkyFramework.Exceptions
 {
-    public class ServiceNotFound : Exception
+    public class ServiceNotFoundException : Exception
     {
-        public ServiceNotFound()
+        public ServiceNotFoundException()
         {
 
         }
 
-        public ServiceNotFound(string message)
+        public ServiceNotFoundException(string message)
             : base(message)
         {
 
         }
 
 
-        public ServiceNotFound(string message, Exception innerExeption)
+        public ServiceNotFoundException(string message, Exception innerExeption)
             : base(message, innerExeption)
         {
 

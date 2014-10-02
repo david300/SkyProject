@@ -6,99 +6,100 @@ using System.Threading.Tasks;
 
 namespace SkyFramework.Entities
 {
-    public class Mensaje
+    public class Message
     {
-        #region ###.Enumerados.###
+        #region Enums
 
-        public enum eTipo { OK, ERR_CUSTOM, ERR_INESPERADO }
-
-        #endregion
-
-        #region ###.Variables Privadas.###
-
-        private eTipo _eID;
-        private string _sDescripcion = string.Empty;          // Cadena para guardar un mensaje o cualquier otra info en forma de cadena.
-        private object _oObj = null;                  // Para cualquier objeto asociado
-        private Exception _exException = null;                  // Exepcion devulta en caso de Errores Ineperado
+            public enum eType { OK, ERR_CUSTOM, ERR_INESPERADO }
 
         #endregion
 
-        #region ###.Atributos.###
-        public eTipo ID
-        {
-            get { return _eID; }
-            set { _eID = value; }
-        }
+        #region Properties
 
-        public string Descripcion
-        {
-            get { return _sDescripcion; }
-            set { _sDescripcion = value; }
-        }
+            private eType _ID;
+            public eType ID
+            {
+                get { return _ID; }
+                set { _ID = value; }
+            }
 
-        public object Obj
-        {
-            get { return _oObj; }
-            set { _oObj = value; }
-        }
+            private string _description = string.Empty;          // Cadena para guardar un mensaje o cualquier otra info en forma de cadena.
+            public string Descripcion
+            {
+                get { return _description; }
+                set { _description = value; }
+            }
 
-        public Exception Exception
-        {
-            get { return _exException; }
-            set { _exException = value; }
+            private object _object = null;                  // Para cualquier objeto asociado
+            public object Object
+            {
+                get { return _object; }
+                set { _object = value; }
+            }
 
-        }
+            private Exception _exception = null;                  // Exepcion devulta en caso de Errores Ineperado
+            public Exception Exception
+            {
+                get { return _exception; }
+                set { _exception = value; }
+
+            }
 
         #endregion
 
-        #region ###.Constructores.###
+        #region Constructors
 
-        public Mensaje()
-        {
-            // default
-        }
-        public Mensaje(eTipo peTipo)
-        {
-            _eID = peTipo;
-            _sDescripcion = string.Empty;
-            _oObj = null;
-            _exException = null;
-        }
+            public Message()
+            {
+                // default
+            }
+            public Message(eType type)
+            {
+                _ID = type;
+                _description = string.Empty;
+                _object = null;
+                _exception = null;
+            }
 
-        public Mensaje(eTipo peTipo, string psDescripcion)
-        {
-            _eID = peTipo;
-            _sDescripcion = psDescripcion;
-            _oObj = null;
-            _exException = null;
-        }
+            public Message(eType type, string description)
+            {
+                _ID = type;
+                _description = description;
+                _object = null;
+                _exception = null;
+            }
 
-        public Mensaje(eTipo peTipo, object poObj)
-        {
-            _eID = peTipo;
-            _sDescripcion = peTipo.ToString();
-            _oObj = poObj;
-            _exException = null;
-        }
+            public Message(eType type, object obj)
+            {
+                _ID = type;
+                _description = type.ToString();
+                _object = obj;
+                _exception = null;
+            }
 
-        public Mensaje(eTipo peTipo, string psDescripcion, object poObj)
-        {
-            _eID = peTipo;
-            _sDescripcion = psDescripcion;
-            _oObj = poObj;
-            _exException = null;
-        }
+            public Message(eType type, Exception ex)
+            {
+                _ID = type;
+                _description = ex.Message;
+                _object = null;
+                _exception = ex;
+            }
 
-        public Mensaje(eTipo peTipo, string psDescripcion, object poObj, Exception pexException)
-        {
-            _eID = peTipo;
-            _sDescripcion = psDescripcion;
-            _oObj = poObj;
-            _exException = pexException;
-        }
+            public Message(eType type, string description, object obj)
+            {
+                _ID = type;
+                _description = description;
+                _object = obj;
+                _exception = null;
+            }
 
-
-
+            public Message(eType type, string description, object obj, Exception pexException)
+            {
+                _ID = type;
+                _description = description;
+                _object = obj;
+                _exception = pexException;
+            }
         #endregion
     }
 }

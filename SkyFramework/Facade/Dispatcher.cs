@@ -10,28 +10,42 @@ using System.IO;
 using System.Threading;
 using System.Configuration;
 using SkyFramework.Facade;
+using SkyFramework.Entities;
+using SkyFramework.Exceptions;
 
 namespace SkyFramework.Facade
 {
-    public class Dispatcher
+    internal class Dispatcher
     {
         #region Private Area
-        private string configFileName = "Facade_Config.xml";
-        private string binPath = "";
-        private Hashtable CommandList;
-        private int SystemId = 0;
-        private decimal UserId = 0;
-        private string connString = "";
-        private SkyFramework.Connection.SkyConnection _skyConn = null;
+        //Nombre del XML que contendrá las acciones
+        private string _configFileName = "Facade_Config.xml";
 
+        //Contiene el path donde se encontrará el XML
+        private string _binPath = "";
+
+        //Listado de comandos recuperados
+        private Hashtable CommandList;
+
+        //Usado como variable para diferenciar los sistemas
+        private int SystemId = 0;
+
+        //Id del usuario en sesión, si es hay una
+        private decimal _IdUser = 0;
+
+
+        private string _connString = "";
+
+        //Conexión a la DB
+        private SkyFramework.Connection.SkyConnection _skyConnection = null;
+
+        //Instancia del despachador
         private static Dispatcher uniqueInstance;
 
-        /// <summary>
-        /// Constructor interno, No accesible desde afuera
-        /// </summary>
+        // Constructor interno, No accesible desde afuera
         private Dispatcher()
         {
-            configure();
+            Configure();
         }
 
         ///<summary>
@@ -39,12 +53,10 @@ namespace SkyFramework.Facade
         ///<para>HELP: </para>Exeptions: XmlNotInCorrectFormat
         ///</summary> 	
         /// <param name="xmlDocument">Documento de configuracion abierto</param>
-        //Ref: Nhibernate , NHibernate.Cfg.AssemblyHbmOrderer,  public IList GetHbmFiles()
         private void ReadXml(XmlDocument xmlDocument)
         {
             //por defecto 100,  van a haber mas pero mejora la performance una inicializacion aproximada 
             CommandList = new Hashtable(100);
-
 
             try
             {
@@ -100,7 +112,7 @@ namespace SkyFramework.Facade
                                 }
                                 if (subNode.Attributes["SuccefullLogText"] != null)
                                 {
-                                    oCommand.SuccefullLog = subNode.Attributes["SuccefullLogText"].Value;
+                                    oCommand.SuccessfullLog = subNode.Attributes["SuccefullLogText"].Value;
                                 }
                                 if (subNode.Attributes["NotPermisionLogText"] != null)
                                 {
@@ -119,55 +131,55 @@ namespace SkyFramework.Facade
 
             catch (Exception ex)
             {
-                throw new SkyFramework.Exceptions.XmlNotInCorrectFormat("Error parseando la configuracion de facade.", ex);
+                throw new XmlNotInCorrectFormatException("Error parseando la configuracion de facade.", ex);
             }
 
         }
 
         ///<summary>
         ///<para>PRE: cmd no null           </para>POS:ejecuta el servicio pedido
-        ///<para>HELP:                      </para>Exeptions: ServiceNotFound, Y excepciones por problemas de la carga de Assembly
+        ///<para>HELP:                      </para>Exeptions: ServiceNotFound, TargetParameterCountException, Y excepciones por problemas de la carga de Assembly
         ///</summary> 	 
-        private SkyFramework.Entities.Mensaje InvoqueProcesses(Command cmd, object[] argumentos)
+        private Message InvoqueProcesses(Command oCommand, List<Object> arguments)
         {
             try
             {
-                List<object> _argumentos = argumentos.ToList();
 
-                //Assembly assembly = getAssembly(cmd);
-                //Type myType = assembly.GetType(cmd.Namespace + "." + cmd.ServiceClass);
-                Type myType = Type.GetType(cmd.Namespace + "." + cmd.ServiceClass);
+                //Trato de inicializar el método
+                //Ej: cmd.Namespace + "." + cmd.ServiceClass = SkyFramework.Services.UsuarioServices
+                Type myType = Type.GetType(oCommand.Namespace + "." + oCommand.ServiceClass);
                 if (myType == null)
                 {
-                    throw new SkyFramework.Exceptions.ServiceNotFound(
-                       " No se encuentra la clase del servicio: " + cmd.Namespace + "." + cmd.ServiceClass + "." + cmd.ServiceMethod +
-                       " Llamada desde el servicio : " + cmd.ActionName
+                    throw new ServiceNotFoundException(
+                       " No se encuentra la clase del servicio: " + oCommand.Namespace + "." + oCommand.ServiceClass + "." + oCommand.ServiceMethod +
+                       " Llamada desde el servicio : " + oCommand.ActionName
                        );
                 }
-                MethodInfo mymethod = myType.GetMethod(cmd.ServiceMethod);
+                MethodInfo mymethod = myType.GetMethod(oCommand.ServiceMethod);
 
                 if (mymethod == null)
                 {
-                    throw new SkyFramework.Exceptions.ServiceNotFound(
-                        " No se encuentra el servicio: " + cmd.Namespace + "." + cmd.ServiceClass + "." + cmd.ServiceMethod +
-                        " Llamada desde el servicio : " + cmd.ActionName
+                    throw new ServiceNotFoundException(
+                        " No se encuentra el servicio: " + oCommand.Namespace + "." + oCommand.ServiceClass + "." + oCommand.ServiceMethod +
+                        " Llamada desde el servicio : " + oCommand.ActionName
                         );
                 }
 
                 //OpenedConnection indica si le tengo que pasar una conexión abierta
-                if (cmd.OpenedConnection)
+                if (oCommand.OpenedConnection)
                 {
-                    _argumentos.Add(this._skyConn = new SkyFramework.Connection.SkyConnection("Data Source=localhost;Initial Catalog=binDGSLD;Integrated Security=True", true));
+                    //arguments.Add(this._skyConnection = new SkyFramework.Connection.SkyConnection("Data Source=localhost;Initial Catalog=binDGSLD;Integrated Security=True", true));
+                    arguments.Add(this._skyConnection = new SkyFramework.Connection.SkyConnection(true));
                 }
 
 
                 List<ParameterInfo> parameters = mymethod.GetParameters().ToList<ParameterInfo>();
-                if (_argumentos.Count != parameters.Count)
+                if (arguments.Count != parameters.Count)
                 {
                     throw new Exceptions.TargetParameterCountException("El conteo de parámetros de la llamada, no coincide con el del método: " + Exceptions.TargetParameterCountException.GetParameters(parameters), parameters);
                 }
 
-                return (SkyFramework.Entities.Mensaje)mymethod.Invoke(null, _argumentos.ToArray());
+                return (Message)mymethod.Invoke(null, arguments.ToArray());
             }
             catch (Exceptions.TargetParameterCountException tpcEx) 
             {
@@ -179,9 +191,9 @@ namespace SkyFramework.Facade
             }
             finally
             {
-                if (this._skyConn != null)
+                if (this._skyConnection != null)
                 {
-                    this._skyConn.CloseConnection();
+                    this._skyConnection.CloseConnection();
                 }
             }
 
@@ -193,7 +205,7 @@ namespace SkyFramework.Facade
         ///</summary> 	 
         /// <param name="cmd"></param>
         /// <returns>Assembly </returns>
-        private static Assembly getAssembly(Command cmd)
+        private static Assembly GetAssembly(Command cmd)
         {
             Assembly assembly = null;
             string assemblyName = cmd.Assembly;
@@ -239,24 +251,24 @@ namespace SkyFramework.Facade
         ///<para>PRE: Archivo de xml de configuracion "Facade_Config.xml" en el bin de la aplicacion, y correcto formato</para>POS:Cargara la lista de acciones posibles a ejecutar
         ///<para>Si no se quiere reiniciar la aplicacion y se agregan servicios, este metodo actualizara la configuracion del dispatcher </para>Exeptions: XmlNotInCorrectFormat
         ///</summary> 	 
-        private void configure()
+        private void Configure()
         {
             //Cargo el path y Archivo de configuracion
             // configFile  = System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Replace(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + ".DLL", "") + configFileName;
-            binPath = System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Replace(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + ".DLL", "").Replace("bin/","Config/");
+            _binPath = System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Replace(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + ".DLL", "").Replace("bin/","Config/");
             
             XmlTextReader reader = null;
 
             try
             {
                 XmlDocument myXmlDocument = new XmlDocument();
-                myXmlDocument.Load(binPath + configFileName);
+                myXmlDocument.Load(_binPath + _configFileName);
                 ReadXml(myXmlDocument);
             }
 
             catch (Exception e)
             {
-                throw new SkyFramework.Exceptions.XmlConfiguration("Error configurando el Dispatcher. ", e);
+                throw new XmlConfiguration("Error configurando el Dispatcher. ", e);
             }
             finally
             {
@@ -267,16 +279,13 @@ namespace SkyFramework.Facade
 
         }
 
-        private bool verifyPermissions(String permiso)
+        private bool VerifyPermissions(String action)
         {
-            object[] p = { UserId, permiso };
-            return (bool)(SendService("verifyPermissions", p).Obj);
+            return (bool)(SendService("verifyPermissions", new List<object>(){ _IdUser, action }).Object);
         }
 
 
         #endregion
-
-        //----------------------------------------------------------------------------------------------
 
         /// <summary>
         /// manejo con singleton, para leer configuracion unicamente una vez
@@ -290,7 +299,7 @@ namespace SkyFramework.Facade
                 uniqueInstance = new Dispatcher();
             }
 
-            uniqueInstance.UserId = userId;
+            uniqueInstance._IdUser = userId;
             return uniqueInstance;
         }
 
@@ -298,12 +307,12 @@ namespace SkyFramework.Facade
         ///<para>PRE: comando/servicio configurado en xml</para>POS:ejecuta el servicio pedido.
         ///<para>HELP: SendService(clientSave, id=1 );</para>Exeptions: ServiceNotFound, ThreadAbortException ,StackOverflowException, OutOfMemoryException
         ///</summary> 
-        /// <param name="metodo">String nombre del metodo</param>
-        /// <param name="argumentos">Parametros que necesite el servicio</param>
+        /// <param name="methodName">String nombre del metodo</param>
+        /// <param name="arguments">Parametros que necesite el servicio</param>
         /// <returns>Object , Cualquier cosa que devuelva el servicio</returns>
-        public SkyFramework.Entities.Mensaje SendService(string metodo, object[] argumentos)
+        public Message SendService(string methodName, List<Object> arguments)
         {
-            SkyFramework.Entities.Mensaje result = null;
+            Message result = null;
 
             SkyFramework.LogManager.LogHelper logger = new SkyFramework.LogManager.LogHelper(SystemId);
             // logger.SetLog(0, "Enviando servicio para el metodo : " + metodo, SkyFramework.LogManager.LogHelper.eErrorLevel.Debug, null);
@@ -311,11 +320,12 @@ namespace SkyFramework.Facade
             try
             {
                 //Trae el comando a ejecutar (Encapsula clase y metodo)
-                Command cmd = (Command)CommandList[metodo];
-                //Si no lo encontro (No esta configurado en el xml)
+                Command cmd = (Command)CommandList[methodName];
+
+                //Si no lo encontró (No esta configurado en el xml)
                 if (cmd == null)
                 {
-                    throw new SkyFramework.Exceptions.ServiceNotFound(" No se encuentra el servicio pedido \"" + metodo + "\" , revise la configuracion por favor ");
+                    throw new ServiceNotFoundException(" No se encuentra el servicio pedido \"" + methodName + "\" , revise la configuracion por favor ");
                 }
 
 
@@ -329,12 +339,12 @@ namespace SkyFramework.Facade
 
                     if (!tienePermiso)
                     {
-                        throw new SkyFramework.Exceptions.SecurityExceptions("El usuario no tiene permiso");
+                        throw new SecurityExceptions("El usuario no tiene permiso");
                         string log = cmd.NotPermisionLog;
 
                         if (String.IsNullOrEmpty(log))
                         {
-                            log = metodo + " requiere permiso de ejecucion y el usuario que intenta ejecutarlo no lo tiene ";
+                            log = methodName + " requiere permiso de ejecucion y el usuario que intenta ejecutarlo no lo tiene ";
                         }
                         else
                         {
@@ -346,21 +356,21 @@ namespace SkyFramework.Facade
                     }
                 }
 
-                result = InvoqueProcesses(cmd, argumentos);
+                result = InvoqueProcesses(cmd, arguments);
 
                 if (cmd.makeLog)
                 {
                     String parametros = "";
 
-                    if (argumentos != null)
+                    if (arguments != null)
                     {
-                        foreach (object o in argumentos)
+                        foreach (object o in arguments)
                         {
                             parametros += o.ToString() + ", ";
                         }
                     }
 
-                    logger.SetLog(this.UserId, "Se ejecuto la acción :" + metodo + " con los sig. parámetros : " + parametros, SkyFramework.LogManager.LogHelper.eErrorLevel.Info, null);
+                    logger.SetLog(this._IdUser, "Se ejecuto la acción :" + methodName + " con los sig. parámetros : " + parametros, SkyFramework.LogManager.LogHelper.eErrorLevel.Info, null);
                 }
             }
             catch (Exception ex)

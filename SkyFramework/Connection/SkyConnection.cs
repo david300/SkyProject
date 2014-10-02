@@ -33,6 +33,20 @@ namespace SkyFramework.Connection
         #endregion
 
         #region Constructors
+            public SkyConnection()
+            {
+                this._connection = new SqlConnection(SkyConfiguration.GetInstance().ConnectionString);
+            }
+
+            public SkyConnection(bool openConnection)
+            {
+                this._connection = new SqlConnection(SkyConfiguration.GetInstance().ConnectionString);
+                if (openConnection)
+                {
+                    this.OpenConnection();
+                }
+            }
+
             public SkyConnection(string connString) 
             {
                 this._connection = new SqlConnection(this._connectionString = connString);

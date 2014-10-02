@@ -25,6 +25,7 @@ namespace SkyProject.Config.Base
                 Session["sessionBean"] = session;
             }
 
+            SkyFramework.Connection.SkyConfiguration.GetInstance().ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["mainConnection"].ConnectionString;
             Facade = new Facade(this.Context);
         }
     }

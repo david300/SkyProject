@@ -7,55 +7,84 @@ using System.Web;
 using SkyFramework.Facade;
 using System.Configuration;
 using System.Web.UI;
+using SkyFramework.Entities;
 
 namespace SkyFramework.Facade
 {
     public class Facade
     {
-        private decimal intUserId;
+        #region Properties
+            private decimal _IdUser;
+            private string _connString = "";
+        #endregion
 
-        public Facade()
-        {
-            intUserId = 0;
-        }
+        #region Contructors
+            public Facade()
+            {
+                this._IdUser = 0;
+            }
 
-        private Facade(int UserId)
-        {
-            intUserId = UserId;
-        }
+            private Facade(int UserId)
+            {
+                this._IdUser = UserId;
+            }
         
-        
-        public Facade(HttpContext context)
-        {
-            //Controlaría el acceso a toda la mierda
-            SessionBean s = (SessionBean)context.Session["sessionBean"];
-            if ((s == null) || (s.Usuario == null))
+            public Facade(HttpContext context)
             {
-                context.Session.Abandon();
-                context.Response.Redirect("Login.aspx");
-            }
-            else
-            {
-                intUserId = s.Usuario.Id_Usuario;
+                VerifyContext(context);
             }
 
-        }
+            public Facade(HttpContext context, string connString)
+            {
+                VerifyContext(context);
+                SkyFramework.Connection.SkyConfiguration.GetInstance().ConnectionString = connString;
+            }
+        #endregion
 
-        public SkyFramework.Entities.Mensaje InvoqueService(string method, object[] arguments)
-        {
-            try
+        #region Private Methods
+            private void VerifyContext(HttpContext context)
             {
-                Dispatcher disp = Dispatcher.GetInstance(intUserId);
-                return (SkyFramework.Entities.Mensaje)disp.SendService(method, arguments);
+                //Controlaría el acceso a toda la mierda
+                SessionBean s = (SessionBean)context.Session["sessionBean"];
+                if ((s == null) || (s.Usuario == null))
+                {
+                    context.Session.Abandon();
+                    context.Response.Redirect("Login.aspx");
+                }
+                else
+                {
+                    this._IdUser = s.Usuario.Id_Usuario;
+                }
             }
-            catch (Exceptions.TargetParameterCountException tpcEx)
+
+            private Message InvoqueThis(string methodName, List<Object> arguments) 
             {
-                throw tpcEx;
+                try
+                {
+                    Dispatcher dispatcher = Dispatcher.GetInstance(this._IdUser);
+                    return (Message)dispatcher.SendService(methodName, arguments);
+                }
+                catch (Exceptions.TargetParameterCountException tpcEx)
+                {
+                    throw tpcEx;
+                }
+                catch (Exceptions.ServiceNotFoundException ex)
+                {
+                    throw ex;
+                }
             }
-            catch (Exceptions.ServiceNotFound ex)
+        #endregion
+
+        #region Public Methods
+            public Message InvoqueService(string methodName, List<Object> arguments)
             {
-                throw ex;
+                return this.InvoqueThis(methodName, arguments);
             }
-        }
+
+            public Message InvoqueService(string methodName, object[] arguments)
+            {
+                return this.InvoqueThis(methodName, arguments.ToList());
+            }
+        #endregion
     }
 }
