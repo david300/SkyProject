@@ -9,9 +9,6 @@ namespace SkyFramework.LogManager
     /*Clase que nos serviría para guardar logs*/
     public class LogHelper
     {
-        private int SisId;
-        private static string ConnString;
-        
         public enum eErrorLevel
         {
             Debug = 0,

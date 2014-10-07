@@ -14,7 +14,7 @@ namespace SkyProject
         {
             if (!Page.IsPostBack) 
             {
-                Message mensaje = Facade.InvoqueService("Usuario.Security.GetById", new object[] { (decimal)1000 });
+                Message mensaje = Facade.InvoqueService("Usuario.Security.GetBy Id", new object[] { (decimal)1000 });
                 
                 Response.Write(mensaje.Descripcion);
             }

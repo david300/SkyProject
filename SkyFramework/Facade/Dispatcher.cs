@@ -268,7 +268,7 @@ namespace SkyFramework.Facade
 
             catch (Exception e)
             {
-                throw new XmlConfiguration("Error configurando el Dispatcher. ", e);
+                throw new XmlConfigurationException("Error configurando el Dispatcher. ", e);
             }
             finally
             {
@@ -339,7 +339,7 @@ namespace SkyFramework.Facade
 
                     if (!tienePermiso)
                     {
-                        throw new SecurityExceptions("El usuario no tiene permiso");
+                        throw new SecurityException("El usuario no tiene permiso");
                         string log = cmd.NotPermisionLog;
 
                         if (String.IsNullOrEmpty(log))

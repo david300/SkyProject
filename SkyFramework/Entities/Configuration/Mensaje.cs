@@ -93,12 +93,12 @@ namespace SkyFramework.Entities
                 _exception = null;
             }
 
-            public Message(eType type, string description, object obj, Exception pexException)
+            public Message(eType type, string description, object obj, Exception exception)
             {
                 _ID = type;
                 _description = description;
                 _object = obj;
-                _exception = pexException;
+                _exception = exception;
             }
         #endregion
     }

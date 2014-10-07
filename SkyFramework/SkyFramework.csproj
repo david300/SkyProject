@@ -43,15 +43,15 @@
   <ItemGroup>
     <Compile Include="Connection\SkyConfiguration.cs" />
     <Compile Include="Connection\SkyConnection.cs" />
-    <Compile Include="Entities\Mensaje.cs" />
-    <Compile Include="Entities\Usuario.cs" />
+    <Compile Include="Entities\Configuration\Mensaje.cs" />
+    <Compile Include="Entities\Configuration\Usuario.cs" />
     <Compile Include="Exceptions\BusinessLogicException.cs" />
     <Compile Include="Exceptions\FacadeException.cs" />
-    <Compile Include="Exceptions\SecurityExceptions.cs" />
-    <Compile Include="Exceptions\ServiceNotFound.cs" />
+    <Compile Include="Exceptions\SecurityException.cs" />
+    <Compile Include="Exceptions\ServiceNotFoundException.cs" />
     <Compile Include="Exceptions\TargetParameterCountException.cs" />
-    <Compile Include="Exceptions\XmlConfiguration.cs" />
-    <Compile Include="Exceptions\XmlNotInCorrectFormat.cs" />
+    <Compile Include="Exceptions\XmlConfigurationException.cs" />
+    <Compile Include="Exceptions\XmlNotInCorrectFormatException.cs" />
     <Compile Include="Facade\Command.cs" />
     <Compile Include="Facade\Dispatcher.cs" />
     <Compile Include="Facade\Facade.cs" />

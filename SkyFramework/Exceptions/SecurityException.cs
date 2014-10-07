@@ -6,20 +6,19 @@ using System.Threading.Tasks;
 
 namespace SkyFramework.Exceptions
 {
-    public class XmlConfiguration : FacadeException
+    public class SecurityException : BusinessLogicException
     {
-        public XmlConfiguration()
+        public SecurityException()
         {
 
         }
 
-        public XmlConfiguration(string message)
+        public SecurityException(string message)
             : base(message)
         {
         }
 
-
-        public XmlConfiguration(string message, Exception innerExeption)
+        public SecurityException(string message, Exception innerExeption)
             : base(message, innerExeption)
         {
         }
