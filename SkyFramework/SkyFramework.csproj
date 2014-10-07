@@ -43,7 +43,13 @@
   <ItemGroup>
     <Compile Include="Connection\SkyConfiguration.cs" />
     <Compile Include="Connection\SkyConnection.cs" />
+    <Compile Include="Entities\Configuration\Accion.cs" />
     <Compile Include="Entities\Configuration\Mensaje.cs" />
+    <Compile Include="Entities\Configuration\Menu.cs" />
+    <Compile Include="Entities\Configuration\Modulo.cs" />
+    <Compile Include="Entities\Configuration\Pagina.cs" />
+    <Compile Include="Entities\Configuration\Perfil.cs" />
+    <Compile Include="Entities\Configuration\TipoMenu.cs" />
     <Compile Include="Entities\Configuration\Usuario.cs" />
     <Compile Include="Exceptions\BusinessLogicException.cs" />
     <Compile Include="Exceptions\FacadeException.cs" />
