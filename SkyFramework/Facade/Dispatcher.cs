@@ -86,8 +86,9 @@ namespace SkyFramework.Facade
                         oCommand.RequireSecurity = actioNode.Attributes["requireSecurity"].Value.ToLower().Equals("true");
                         oCommand.makeLog = actioNode.Attributes["logger"].Value.ToLower().Equals("true");
 
-                        oCommand.CloseTransaction = actioNode.Attributes["closeTransaction"].Value.ToLower().Equals("true");
-                        oCommand.OpenedConnection = actioNode.Attributes["openedConnection"].Value.ToLower().Equals("true");
+                        
+                        oCommand.CloseTransaction = actioNode.Attributes["closeTransaction"] != null ? actioNode.Attributes["closeTransaction"].Value.ToLower().Equals("true") : false;
+                        oCommand.OpenedConnection = actioNode.Attributes["openedConnection"] != null ? actioNode.Attributes["openedConnection"].Value.ToLower().Equals("true") : true;
 
                         foreach (XmlNode subNode in actioNode.ChildNodes)
                         {

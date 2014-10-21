@@ -53,7 +53,7 @@ namespace SkyFramework.Facade
                 }
                 else
                 {
-                    this._IdUser = s.Usuario.Id_Usuario;
+                    this._IdUser = s.Usuario.IdUsuario;
                 }
             }
 

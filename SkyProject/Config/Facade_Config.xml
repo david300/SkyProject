@@ -7,6 +7,10 @@ el servicio , los log que debe realizar y si requiere seguridad-->
     <Action name="Usuario.Security.GetById" logger="false" requireSecurity="true" openedConnection="true" closeTransaction="false">
       <Service class="UsuarioServices" method="GetById"></Service>
     </Action>
+
+    <Action name="Usuario.Security.Login" logger="false" requireSecurity="false">
+      <Service class="UsuarioServices" method="Login"></Service>
+    </Action>
     
   </Actions>
 </facade-Config>

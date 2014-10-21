@@ -90,14 +90,14 @@ namespace SkyFramework.Connection
                 }
             }
 
-            internal DataSet ExecuteDataSet(string sql) 
+            internal DataTable ExecuteDataSet(string sql) 
             {
                 try
                 {
                     SqlCommand oComm = new SqlCommand(sql, this._connection);
                     SqlDataAdapter oDataAdapter = new SqlDataAdapter(oComm);
 
-                    DataSet ds = new DataSet();
+                    DataTable ds = new DataTable();
                     oDataAdapter.Fill(ds);
 
                     return ds;
@@ -109,14 +109,156 @@ namespace SkyFramework.Connection
             
             }
 
-            internal void ExecuteNonQuery() 
+            internal DataTable ExecuteDataSet(string sql, List<SqlParameter> parameters)
             {
+                try
+                {
+                    SqlCommand oComm = new SqlCommand(sql, this._connection);
+                    oComm.CommandType = CommandType.Text;
+                    foreach (SqlParameter item in parameters)
+                    {
+                        oComm.Parameters.Add(item);
+                    }
 
+                    SqlDataAdapter oDataAdapter = new SqlDataAdapter(oComm);
+
+                    DataTable ds = new DataTable();
+                    oDataAdapter.Fill(ds);
+
+                    return ds;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
             }
 
-            internal object ExecuteEscalar()
+            internal DataTable ExecuteDataSet(string sql, List<SqlParameter> parameters, CommandType type)
             {
-                return null;
+                try
+                {
+                    SqlCommand oComm = new SqlCommand(sql, this._connection);
+                    oComm.CommandType = type;
+                    foreach (SqlParameter item in parameters)
+                    {
+                        oComm.Parameters.Add(item);
+                    }
+
+                    SqlDataAdapter oDataAdapter = new SqlDataAdapter(oComm);
+
+                    DataTable ds = new DataTable();
+                    oDataAdapter.Fill(ds);
+
+                    return ds;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+
+            internal void ExecuteNonQuery(string sql) 
+            {
+                try
+                {
+                    SqlCommand oComm = new SqlCommand(sql, this._connection);
+                    oComm.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+
+            internal void ExecuteNonQuery(string sql, List<SqlParameter> parameters)
+            {
+                try
+                {
+                    SqlCommand oComm = new SqlCommand(sql, this._connection);
+                    oComm.CommandType = CommandType.Text;
+                    foreach (SqlParameter item in parameters)
+                    {
+                        oComm.Parameters.Add(item);
+                    }
+
+                    oComm.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+
+            internal void ExecuteNonQuery(string sql, List<SqlParameter> parameters, CommandType type)
+            {
+                try
+                {
+                    SqlCommand oComm = new SqlCommand(sql, this._connection);
+                    oComm.CommandType = type;
+                    foreach (SqlParameter item in parameters)
+                    {
+                        oComm.Parameters.Add(item);
+                    }
+
+                    oComm.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+
+            internal string ExecuteEscalar(string sql)
+            {
+                try
+                {
+                    SqlCommand oComm = new SqlCommand(sql, this._connection);
+                    return (string)oComm.ExecuteScalar();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+
+            internal string ExecuteEscalar(string sql, List<SqlParameter> parameters)
+            {
+                try
+                {
+                    SqlCommand oComm = new SqlCommand(sql, this._connection);
+                    oComm.CommandType = CommandType.Text;
+
+                    foreach (SqlParameter item in parameters)
+                    {
+                        oComm.Parameters.Add(item);
+                    }
+
+                    return (string)oComm.ExecuteScalar();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+
+            internal string ExecuteEscalar(string sql, List<SqlParameter> parameters, CommandType type)
+            {
+                try
+                {
+                    SqlCommand oComm = new SqlCommand(sql, this._connection);
+                    oComm.CommandType = type;
+
+                    foreach (SqlParameter item in parameters)
+                    {
+                        oComm.Parameters.Add(item);
+                    }
+
+                    return (string)oComm.ExecuteScalar();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
             }
 
             internal void CloseConnection()

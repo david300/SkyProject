@@ -21,7 +21,7 @@ namespace SkyProject.Config.Base
             if (Session["sessionBean"] == null) {
                 SessionBean session = new SessionBean();
                 session.Usuario = new SkyFramework.Entities.Usuario();
-                session.Usuario.Id_Usuario = 1000;
+                session.Usuario.IdUsuario = 1000;
                 Session["sessionBean"] = session;
             }
 
