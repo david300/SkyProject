@@ -16,6 +16,7 @@ namespace SkyFramework.LogManager
             Warn,
             Error,
             Fatal
+            //Hola
         }
 
         public LogHelper(int SisId)

@@ -21,6 +21,7 @@ namespace SkyFramework.Entities
             {
                 get { return _IdPerfil; }
                 set { _IdPerfil = value; }
+                //Hola
             }
 
             private string _Descripcion;
